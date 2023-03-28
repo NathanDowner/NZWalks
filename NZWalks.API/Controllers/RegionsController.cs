@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
 
@@ -9,10 +10,12 @@ namespace NZWalks.API.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly IRegionRepository regionRepository;
+        private readonly IMapper mapper;
 
-        public RegionsController(IRegionRepository regionRepository)
+        public RegionsController(IRegionRepository regionRepository, IMapper mapper)
         {
             this.regionRepository = regionRepository;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -20,17 +23,7 @@ namespace NZWalks.API.Controllers
         {
             var regions = await regionRepository.GetAllRegionsAsync();
 
-            var regionsDto = new List<RegionDTO>();
-            foreach (var region in regions)
-            {
-                regionsDto.Add(new RegionDTO()
-                {
-                    Id = region.Id,
-                    Code = region.Code,
-                    Name = region.Name,
-                    RegionImageUrl = region.RegionImageUrl,
-                });
-            }
+            var regionsDto = mapper.Map<List<RegionDTO>>(regions);
 
             return Ok(regionsDto);
         }
@@ -46,13 +39,7 @@ namespace NZWalks.API.Controllers
                 return NotFound();
             }
 
-            var regionDto = new RegionDTO()
-            {
-                Id = region.Id,
-                Code = region.Code,
-                Name = region.Name,
-                RegionImageUrl = region.RegionImageUrl,
-            };
+            var regionDto = mapper.Map<RegionDTO>(region);
 
             return Ok(regionDto);
         }
@@ -62,13 +49,7 @@ namespace NZWalks.API.Controllers
         {
             var regionModel = await regionRepository.CreateRegionAsync(createRegionDto);
 
-            var regionDto = new RegionDTO
-            {
-                Id = regionModel.Id,
-                Code = regionModel.Code,
-                Name = regionModel.Name,
-                RegionImageUrl = regionModel.RegionImageUrl
-            };
+            var regionDto = mapper.Map<RegionDTO>(regionModel);
 
             return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
         }
@@ -84,13 +65,7 @@ namespace NZWalks.API.Controllers
                 return NotFound();
             }
 
-            var regionDto = new RegionDTO
-            {
-                Id = regionModel.Id,
-                Code = regionModel.Code,
-                Name = regionModel.Name,
-                RegionImageUrl = regionModel.RegionImageUrl
-            };
+            var regionDto = mapper.Map<RegionDTO>(regionModel);
 
             return Ok(regionDto);
         }
