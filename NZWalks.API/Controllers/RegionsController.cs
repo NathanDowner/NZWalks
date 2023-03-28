@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NZWalks.API.Data;
-using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
 
@@ -11,12 +8,10 @@ namespace NZWalks.API.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
-        private readonly NZWalksDbContext _context;
         private readonly IRegionRepository regionRepository;
 
-        public RegionsController(NZWalksDbContext dbContext, IRegionRepository regionRepository)
+        public RegionsController(IRegionRepository regionRepository)
         {
-            this._context = dbContext;
             this.regionRepository = regionRepository;
         }
 
@@ -109,7 +104,7 @@ namespace NZWalks.API.Controllers
             {
                 return NotFound();
             }
-            
+
             return NoContent();
         }
     }
